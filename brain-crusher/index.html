@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRAIN CRUSHER 3000</title>
+<link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #FFD600;
+    --orange: #FF6B35;
+    --red: #E63946;
+    --blue: #1D3557;
+    --teal: #06D6A0;
+    --purple: #7B2FBE;
+    --white: #FFFCF2;
+    --dark: #0D0D0D;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--dark);
+    font-family: 'Nunito', sans-serif;
+    color: var(--white);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 20% 20%, rgba(123,47,190,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(6,214,160,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 60% 10%, rgba(255,107,53,0.2) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  #app {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 680px;
+    padding: 24px 20px;
+  }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* TITLE */
+  .title-wrap { text-align: center; animation: dropIn 0.6s cubic-bezier(.3,1.5,.5,1) both; }
+  @keyframes dropIn { from { transform: translateY(-60px); opacity:0; } to { transform:none; opacity:1; } }
+  .skull { font-size: 80px; display: block; animation: bob 2s ease-in-out infinite; }
+  @keyframes bob { 0%,100%{transform:rotate(-5deg) scale(1);} 50%{transform:rotate(5deg) scale(1.08);} }
+  h1.game-title {
+    font-family: 'Boogaloo', cursive;
+    font-size: clamp(52px,12vw,90px);
+    line-height: 1;
+    color: var(--yellow);
+    text-shadow: 4px 4px 0 var(--orange), 8px 8px 0 rgba(0,0,0,0.4);
+    margin: 8px 0 6px;
+  }
+  .subtitle {
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--teal);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .warning-box {
+    background: rgba(230,57,70,0.12);
+    border: 2px solid var(--red);
+    border-radius: 16px;
+    padding: 14px 22px;
+    margin: 0 auto 28px;
+    max-width: 440px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #ff9aa2;
+    line-height: 1.55;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 12px;
+  }
+  .category-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .cat-btn {
+    padding: 12px 8px;
+    border-radius: 12px;
+    border: 3px solid transparent;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .cat-btn:hover { transform: scale(1.04); }
+  .cat-btn.selected { border-color: var(--yellow); transform: scale(1.04); }
+  .cat-btn .cat-icon { font-size: 24px; display: block; margin-bottom: 4px; }
+  .cat-science  { background:#1a3a5c; color:#7dd3fc; }
+  .cat-history  { background:#3a1a0a; color:#fbbf72; }
+  .cat-wordplay { background:#1a3a1a; color:#86efac; }
+  .cat-math     { background:#2a1a3a; color:#c4b5fd; }
+  .cat-geography{ background:#0d2e1a; color:#6ee7b7; }
+  .cat-animals  { background:#2e1a0a; color:#fca5a5; }
+  .btn-wrap { text-align: center; }
+  .btn {
+    font-family: 'Boogaloo', cursive;
+    font-size: 26px;
+    letter-spacing: 1px;
+    background: var(--yellow);
+    color: var(--dark);
+    border: none;
+    border-radius: 16px;
+    padding: 13px 48px;
+    cursor: pointer;
+    box-shadow: 0 6px 0 var(--orange), 0 10px 20px rgba(0,0,0,0.4);
+    transition: all 0.1s;
+    display: inline-block;
+  }
+  .btn:hover { transform: translateY(-3px); box-shadow: 0 9px 0 var(--orange), 0 14px 24px rgba(0,0,0,0.4); }
+  .btn:active { transform: translateY(3px); box-shadow: 0 3px 0 var(--orange); }
+  .btn-secondary {
+    background: rgba(255,255,255,0.1);
+    color: var(--white);
+    box-shadow: 0 6px 0 rgba(0,0,0,0.3);
+    font-size: 20px;
+    padding: 10px 32px;
+    margin-top: 12px;
+  }
+  .btn-secondary:hover { box-shadow: 0 9px 0 rgba(0,0,0,0.3); }
+  .btn-secondary:active { box-shadow: 0 3px 0 rgba(0,0,0,0.3); }
+
+  /* QUIZ */
+  .quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .score-display { font-family:'Boogaloo',cursive; font-size:22px; color:var(--yellow); }
+  .lives-display { font-size:20px; letter-spacing:4px; }
+  .progress-bar {
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    margin-bottom: 22px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--purple));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+  .question-card {
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 22px;
+    padding: 26px 26px 22px;
+    margin-bottom: 18px;
+    position: relative;
+    animation: slideUp 0.4s cubic-bezier(.3,1.4,.5,1) both;
+    backdrop-filter: blur(10px);
+  }
+  @keyframes slideUp { from { transform:translateY(30px); opacity:0; } }
+  .q-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .q-category-tag {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+  .q-number { font-family:'Boogaloo',cursive; font-size:14px; color:var(--teal); }
+  .question-text {
+    font-size: clamp(16px,3vw,21px);
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--white);
+    padding-right: 60px;
+  }
+  .timer-wrap {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    width: 50px;
+    height: 50px;
+  }
+  .timer-wrap svg { transform: rotate(-90deg); }
+  .timer-bg  { fill:none; stroke:rgba(255,255,255,0.1); stroke-width:4; }
+  .timer-fill { fill:none; stroke:var(--teal); stroke-width:4; stroke-linecap:round;
+    stroke-dasharray:126; transition:stroke-dashoffset 1s linear, stroke 0.3s; }
+  .timer-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family:'Boogaloo',cursive;
+    font-size: 18px;
+    color: var(--white);
+  }
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .option-btn {
+    background: rgba(255,255,255,0.07);
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    line-height: 1.4;
+  }
+  .option-btn:hover:not(:disabled) {
+    background: rgba(255,255,255,0.13);
+    border-color: rgba(255,255,255,0.35);
+    transform: translateY(-2px);
+  }
+  .option-btn:disabled { cursor: default; }
+  .option-btn.correct {
+    background: rgba(6,214,160,0.2);
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+  .option-btn.wrong {
+    background: rgba(230,57,70,0.2);
+    border-color: var(--red);
+    color: #ff9aa2;
+  }
+  .option-btn .opt-letter {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.12);
+    text-align: center;
+    line-height: 22px;
+    font-size: 12px;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+  .feedback-bar {
+    background: rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 14px 20px;
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+    min-height: 54px;
+    border-left: 4px solid transparent;
+    transition: all 0.3s;
+  }
+  .feedback-bar.correct-fb { border-color: var(--teal); color: #a7f3d0; }
+  .feedback-bar.wrong-fb  { border-color: var(--red);  color: #fecaca; }
+
+  /* SHAKE */
+  @keyframes shake {
+    0%,100%{transform:translateX(0);}
+    20%{transform:translateX(-10px);}
+    40%{transform:translateX(10px);}
+    60%{transform:translateX(-8px);}
+    80%{transform:translateX(8px);}
+  }
+  .shake { animation: shake 0.4s ease; }
+
+  /* RESULTS */
+  .results-wrap { text-align: center; animation: dropIn 0.5s cubic-bezier(.3,1.4,.5,1) both; }
+  .result-emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+  .result-title {
+    font-family: 'Boogaloo', cursive;
+    font-size: clamp(38px,8vw,64px);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .result-subtitle { font-size: 16px; opacity: 0.7; margin-bottom: 28px; }
+  .score-big {
+    font-family: 'Boogaloo', cursive;
+    font-size: 72px;
+    color: var(--yellow);
+    text-shadow: 3px 3px 0 var(--orange);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .score-label { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.5; margin-bottom: 28px; }
+  .stats-row {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .stat-box {
+    background: rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 14px 20px;
+    min-width: 100px;
+  }
+  .stat-val { font-family:'Boogaloo',cursive; font-size:28px; color:var(--teal); }
+  .stat-lbl { font-size:11px; letter-spacing:2px; text-transform:uppercase; opacity:0.5; }
+  .grade-badge {
+    display: inline-block;
+    padding: 8px 24px;
+    border-radius: 50px;
+    font-family: 'Boogaloo', cursive;
+    font-size: 22px;
+    margin-bottom: 28px;
+  }
+  .confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    top: -20px;
+    animation: fall linear forwards;
+    pointer-events: none;
+    z-index: 999;
+  }
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- TITLE SCREEN -->
+  <div class="screen active" id="screen-title">
+    <div class="title-wrap">
+      <span class="skull">💀</span>
+      <h1 class="game-title">BRAIN<br>CRUSHER</h1>
+      <div class="subtitle">★ The quiz adults fear ★</div>
+      <div class="warning-box">
+        ⚠️ Warning: These questions are specifically designed to stump kids (and most adults too). Proceed only if you think you're REALLY smart.
+      </div>
+      <div class="section-label">Pick a Category</div>
+      <div class="category-grid">
+        <button class="cat-btn cat-science selected" data-cat="science" onclick="toggleCat(this)">
+          <span class="cat-icon">🔬</span>Science
+        </button>
+        <button class="cat-btn cat-history" data-cat="history" onclick="toggleCat(this)">
+          <span class="cat-icon">🏛️</span>History
+        </button>
+        <button class="cat-btn cat-wordplay" data-cat="wordplay" onclick="toggleCat(this)">
+          <span class="cat-icon">📝</span>Word Play
+        </button>
+        <button class="cat-btn cat-math" data-cat="math" onclick="toggleCat(this)">
+          <span class="cat-icon">🧮</span>Math
+        </button>
+        <button class="cat-btn cat-geography" data-cat="geography" onclick="toggleCat(this)">
+          <span class="cat-icon">🌍</span>Geography
+        </button>
+        <button class="cat-btn cat-animals" data-cat="animals" onclick="toggleCat(this)">
+          <span class="cat-icon">🦎</span>Animals
+        </button>
+      </div>
+      <div class="btn-wrap">
+        <button class="btn" onclick="startGame()">LET'S GO! 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="screen" id="screen-quiz">
+    <div class="quiz-header">
+      <div class="score-display">⭐ <span id="score-val">0</span></div>
+      <div class="lives-display" id="lives-display">❤️❤️❤️</div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div class="question-card" id="question-card">
+      <div class="q-meta">
+        <span class="q-category-tag" id="q-cat-tag">Science</span>
+        <span class="q-number" id="q-number">Q 1 / 10</span>
+      </div>
+      <div class="question-text" id="question-text">Loading...</div>
+      <div class="timer-wrap">
+        <svg width="50" height="50" viewBox="0 0 50 50">
+          <circle class="timer-bg" cx="25" cy="25" r="20"/>
+          <circle class="timer-fill" id="timer-circle" cx="25" cy="25" r="20"/>
+        </svg>
+        <div class="timer-text" id="timer-text">20</div>
+      </div>
+    </div>
+    <div class="options-grid" id="options-grid"></div>
+    <div class="feedback-bar" id="feedback-bar"></div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div class="screen" id="screen-results">
+    <div class="results-wrap">
+      <span class="result-emoji" id="result-emoji">🏆</span>
+      <div class="result-title" id="result-title">Amazing!</div>
+      <div class="result-subtitle" id="result-subtitle">You crushed the quiz!</div>
+      <div class="score-big" id="result-score">0</div>
+      <div class="score-label">POINTS</div>
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-val" id="stat-correct">0</div>
+          <div class="stat-lbl">Correct</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="stat-wrong">0</div>
+          <div class="stat-lbl">Wrong</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="stat-streak">0</div>
+          <div class="stat-lbl">Best Streak</div>
+        </div>
+      </div>
+      <div class="grade-badge" id="grade-badge">B+</div>
+      <br>
+      <button class="btn" onclick="showTitle()">Play Again 🔄</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = {
+  science: [
+    { q:"What is the chemical symbol for gold?", opts:["Go","Au","Ag","Gd"], ans:1, exp:"Au comes from the Latin word 'Aurum.' Ag is silver, Go and Gd aren't real element symbols." },
+    { q:"How many bones does an adult human body have?", opts:["186","206","226","246"], ans:1, exp:"Adults have 206 bones. Babies are born with about 270, but many fuse together!" },
+    { q:"What planet is known as the Red Planet?", opts:["Venus","Saturn","Mars","Jupiter"], ans:2, exp:"Mars gets its reddish color from iron oxide (rust) on its surface." },
+    { q:"Which organ produces insulin?", opts:["Liver","Kidney","Pancreas","Stomach"], ans:2, exp:"The pancreas produces insulin, which regulates blood sugar levels." },
+    { q:"What is the speed of light (approximately)?", opts:["300,000 km/s","150,000 km/s","500,000 km/s","1,000,000 km/s"], ans:0, exp:"Light travels at about 299,792 km/s — usually rounded to 300,000 km/s." },
+    { q:"DNA stands for what?", opts:["Deoxyribonucleic Acid","Dioxynuclein Acetate","Dextrose Nucleic Acid","Deoxynuclear Atom"], ans:0, exp:"DNA = Deoxyribonucleic Acid. It carries the genetic instructions for life." },
+    { q:"Which planet has the most moons?", opts:["Jupiter","Saturn","Uranus","Neptune"], ans:1, exp:"Saturn has the most confirmed moons — over 140 as of recent counts!" },
+    { q:"What gas do plants absorb from the air during photosynthesis?", opts:["Oxygen","Nitrogen","Carbon Dioxide","Hydrogen"], ans:2, exp:"Plants absorb CO₂ and release oxygen — the opposite of what animals do." },
+    { q:"What is the hardest natural substance on Earth?", opts:["Titanium","Quartz","Diamond","Graphite"], ans:2, exp:"Diamond scores 10 on the Mohs hardness scale — the maximum!" },
+    { q:"What is the powerhouse of the cell?", opts:["Nucleus","Ribosome","Mitochondria","Golgi Apparatus"], ans:2, exp:"The mitochondria produce ATP energy through cellular respiration." },
+  ],
+  history: [
+    { q:"In what year did World War II end?", opts:["1943","1944","1945","1946"], ans:2, exp:"WWII ended in 1945 — V-E Day (May 8) in Europe, V-J Day (Sept. 2) in the Pacific." },
+    { q:"Who was the first President of the United States?", opts:["John Adams","Benjamin Franklin","Thomas Jefferson","George Washington"], ans:3, exp:"George Washington became the 1st U.S. President in 1789." },
+    { q:"The Great Wall of China was primarily built to protect against which group?", opts:["Mongols","Romans","Persians","Japanese"], ans:0, exp:"The Great Wall was built to defend against Mongol invasions from the north." },
+    { q:"Which ancient wonder still stands today?", opts:["Hanging Gardens of Babylon","Colossus of Rhodes","Great Pyramid of Giza","Lighthouse of Alexandria"], ans:2, exp:"The Great Pyramid of Giza is the only ancient wonder still largely intact." },
+    { q:"What year did the Titanic sink?", opts:["1908","1910","1912","1914"], ans:2, exp:"The Titanic sank on April 15, 1912, on its maiden voyage." },
+    { q:"Who painted the Mona Lisa?", opts:["Michelangelo","Raphael","Leonardo da Vinci","Donatello"], ans:2, exp:"Leonardo da Vinci painted the Mona Lisa around 1503–1519." },
+    { q:"Which country invented paper?", opts:["Egypt","China","Greece","India"], ans:1, exp:"China invented paper around 105 AD, attributed to Cai Lun." },
+    { q:"What was the name of the first artificial satellite launched into space?", opts:["Explorer 1","Vostok","Sputnik","Apollo 1"], ans:2, exp:"Sputnik 1 was launched by the Soviet Union on October 4, 1957." },
+    { q:"How many years did Nelson Mandela spend in prison?", opts:["17","21","27","33"], ans:2, exp:"Mandela was imprisoned from 1964 to 1990 — 27 years." },
+    { q:"The Aztec Empire was conquered by which European explorer?", opts:["Christopher Columbus","Ferdinand Magellan","Hernán Cortés","Francisco Pizarro"], ans:2, exp:"Hernán Cortés conquered the Aztec Empire in 1521." },
+  ],
+  wordplay: [
+    { q:"What is the longest word in the English language that can be typed using only the top row of a keyboard?", opts:["TYPEWRITER","PORTER","POETRY","REQUIRE"], ans:0, exp:"TYPEWRITER uses only Q,W,E,R,T,Y,U,I,O,P — all top-row keys!" },
+    { q:"What 7-letter word becomes a different word when you remove each letter one by one?", opts:["STRETCH","STARTER","STARTLING","STRANGE"], ans:2, exp:"STARTLING → STARLING → STARING → STRING → STING → SING → SIN → IN → I" },
+    { q:"A word that reads the same forwards and backwards is called a...", opts:["Anagram","Palindrome","Homophone","Oxymoron"], ans:1, exp:"Palindromes read the same both ways: RACECAR, LEVEL, KAYAK, etc." },
+    { q:"Which word is always spelled incorrectly?", opts:["Tongue","Incorrectly","Rhythm","Pneumonia"], ans:1, exp:"The word 'incorrectly' — the answer to 'what word is always spelled incorrectly!'" },
+    { q:"How many letters are in the alphabet... according to the riddle?", opts:["26","11","29","24"], ans:1, exp:"'The alphabet' has 11 letters: T-H-E-A-L-P-H-A-B-E-T" },
+    { q:"What English word has three consecutive double letters?", opts:["BOOKKEEPER","COMMITTEE","BALLOON","FOOTBALL"], ans:0, exp:"BOOKKEEPER has OO, KK, and EE — three double letters in a row!" },
+    { q:"The word 'set' has how many definitions in the Oxford English Dictionary?", opts:["47","158","430","Over 400"], ans:3, exp:"'Set' has over 430 definitions — making it one of the most complex English words." },
+    { q:"What is it called when a word imitates the sound it describes (like 'buzz' or 'sizzle')?", opts:["Alliteration","Onomatopoeia","Metaphor","Hyperbole"], ans:1, exp:"Onomatopoeia — words that phonetically imitate the sound they describe." },
+    { q:"Which 5-letter word becomes shorter when you add 2 letters to it?", opts:["SMALL","SHORT","QUICK","LARGE"], ans:1, exp:"SHORT + ER = SHORTER. Longer word, but 'shorter' meaning!" },
+    { q:"What's unusual about the sentence: 'The quick brown fox jumps over the lazy dog'?", opts:["It's 100 years old","It contains every letter of the alphabet","It has no repeated words","It's grammatically incorrect"], ans:1, exp:"It's a pangram — a sentence that contains every letter of the English alphabet at least once." },
+  ],
+  math: [
+    { q:"What is 7 × 8?", opts:["54","56","58","62"], ans:1, exp:"7 × 8 = 56. A classic that trips up even adults!" },
+    { q:"What is the square root of 144?", opts:["11","12","13","14"], ans:1, exp:"12 × 12 = 144, so √144 = 12." },
+    { q:"If you have 3 apples and take away 2, how many do YOU have?", opts:["1","2","3","0"], ans:1, exp:"You TOOK 2, so you have 2 apples! The 1 remaining isn't yours." },
+    { q:"What is 15% of 200?", opts:["25","30","35","40"], ans:1, exp:"15% × 200 = 0.15 × 200 = 30." },
+    { q:"What is the next prime number after 7?", opts:["8","9","10","11"], ans:3, exp:"8, 9, and 10 are all divisible by other numbers. 11 is prime!" },
+    { q:"How many sides does a heptagon have?", opts:["5","6","7","8"], ans:2, exp:"Hepta = seven in Greek. Pentagon=5, Hexagon=6, Heptagon=7, Octagon=8." },
+    { q:"What is 2 to the power of 10?", opts:["512","1024","2048","256"], ans:1, exp:"2^10 = 1024. Fun fact: this is why a kilobyte is 1024 bytes!" },
+    { q:"A triangle has angles of 60° and 80°. What is the third angle?", opts:["30°","40°","50°","60°"], ans:1, exp:"Angles in a triangle always add up to 180°. 180 - 60 - 80 = 40°." },
+    { q:"What is the Roman numeral for 2025?", opts:["MMXXV","MMXV","MCMXXV","MMXXIV"], ans:0, exp:"MM=2000, XX=20, V=5. So MMXXV = 2025." },
+    { q:"If a pizza is cut into 8 slices and you eat 3, what fraction remains?", opts:["3/8","5/8","1/2","5/9"], ans:1, exp:"8 - 3 = 5 slices left. 5/8 of the pizza remains." },
+  ],
+  geography: [
+    { q:"What is the capital city of Australia?", opts:["Sydney","Melbourne","Brisbane","Canberra"], ans:3, exp:"Canberra, not Sydney! It was purpose-built to be the capital in 1913." },
+    { q:"Which is the longest river in the world?", opts:["Amazon","Mississippi","Nile","Yangtze"], ans:2, exp:"The Nile (6,650 km) is the longest river, flowing through 11 countries." },
+    { q:"How many countries are in Africa?", opts:["44","54","64","74"], ans:1, exp:"Africa has 54 recognized sovereign countries — more than any other continent!" },
+    { q:"What is the smallest country in the world?", opts:["Monaco","San Marino","Liechtenstein","Vatican City"], ans:3, exp:"Vatican City (0.44 km²) is smaller than many city parks!" },
+    { q:"Which ocean is the largest?", opts:["Atlantic","Indian","Arctic","Pacific"], ans:3, exp:"The Pacific Ocean covers more area than ALL land on Earth combined." },
+    { q:"What country has the most natural lakes?", opts:["Russia","USA","Brazil","Canada"], ans:3, exp:"Canada has over 60% of the world's natural lakes — about 3 million!" },
+    { q:"In which country would you find Machu Picchu?", opts:["Bolivia","Chile","Ecuador","Peru"], ans:3, exp:"Machu Picchu is in Peru, built by the Inca Empire around 1450." },
+    { q:"What is the most spoken language in the world by number of native speakers?", opts:["English","Spanish","Hindi","Mandarin Chinese"], ans:3, exp:"Mandarin Chinese has ~918 million native speakers — far more than English." },
+    { q:"Which mountain range separates Europe from Asia?", opts:["Alps","Caucasus","Himalayas","Ural Mountains"], ans:3, exp:"The Ural Mountains form the traditional boundary between Europe and Asia." },
+    { q:"What is the currency of Japan?", opts:["Won","Yen","Yuan","Ringgit"], ans:1, exp:"Japan uses the Yen (¥). Won is Korea, Yuan is China, Ringgit is Malaysia." },
+  ],
+  animals: [
+    { q:"How many hearts does an octopus have?", opts:["1","2","3","4"], ans:2, exp:"Octopuses have 3 hearts — 2 pump blood to the gills, 1 to the body." },
+    { q:"What is the fastest land animal?", opts:["Lion","Cheetah","Pronghorn Antelope","Greyhound"], ans:1, exp:"Cheetahs reach 70–75 mph (113 km/h), making them the fastest land animal." },
+    { q:"Which animal has the longest lifespan?", opts:["Greenland Shark","Giant Tortoise","Bowhead Whale","Ocean Quahog Clam"], ans:3, exp:"The Ocean Quahog Clam 'Ming' lived 507 years — a confirmed record!" },
+    { q:"How many legs does a spider have?", opts:["6","8","10","12"], ans:1, exp:"Spiders have 8 legs (insects have 6). Spiders are arachnids, not insects!" },
+    { q:"What is a group of flamingos called?", opts:["A flock","A colony","A flamboyance","A gaggle"], ans:2, exp:"A group of flamingos is called a flamboyance. Fittingly fabulous!" },
+    { q:"Which mammal can fly?", opts:["Flying squirrel","Flying fish","Bat","Sugar glider"], ans:2, exp:"Bats are the ONLY mammals capable of true sustained flight." },
+    { q:"A baby kangaroo is called a...", opts:["Cub","Joey","Pup","Kit"], ans:1, exp:"Baby kangaroos are called joeys. They're born tiny and finish developing in the pouch." },
+    { q:"How many stomachs does a cow have?", opts:["1","2","3","4"], ans:3, exp:"Cows have 4 stomach compartments: rumen, reticulum, omasum, and abomasum." },
+    { q:"What is the only bird that can fly backwards?", opts:["Swift","Hummingbird","Kingfisher","Pelican"], ans:1, exp:"Hummingbirds are the only birds that can truly fly backwards (and hover)!" },
+    { q:"Which animal has the largest brain relative to body size?", opts:["Dolphin","Chimpanzee","Human","Sperm Whale"], ans:2, exp:"Humans have the largest brain relative to body size of any animal." },
+  ],
+};
+
+let selectedCats = ["science"];
+let gameQuestions = [];
+let currentQ = 0;
+let score = 0;
+let lives = 3;
+let correct = 0;
+let wrong = 0;
+let streak = 0;
+let bestStreak = 0;
+let timerInterval = null;
+let timeLeft = 20;
+let answered = false;
+
+function toggleCat(btn) {
+  const cat = btn.dataset.cat;
+  const idx = selectedCats.indexOf(cat);
+  if (idx === -1) {
+    selectedCats.push(cat);
+    btn.classList.add('selected');
+  } else {
+    if (selectedCats.length === 1) return; // need at least 1
+    selectedCats.splice(idx, 1);
+    btn.classList.remove('selected');
+  }
+}
+
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+function startGame() {
+  let pool = [];
+  selectedCats.forEach(cat => {
+    pool = pool.concat(QUESTIONS[cat].map(q => ({...q, cat})));
+  });
+  gameQuestions = shuffle(pool).slice(0, 10);
+  currentQ = 0; score = 0; lives = 3; correct = 0; wrong = 0; streak = 0; bestStreak = 0;
+  showScreen('quiz');
+  loadQuestion();
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+}
+
+function updateLives() {
+  const hearts = ['','❤️','❤️❤️','❤️❤️❤️'];
+  document.getElementById('lives-display').textContent = lives > 0 ? hearts[Math.min(lives,3)] : '💀';
+}
+
+function loadQuestion() {
+  if (currentQ >= gameQuestions.length || lives <= 0) { endGame(); return; }
+  answered = false;
+  const q = gameQuestions[currentQ];
+  const total = gameQuestions.length;
+
+  document.getElementById('q-cat-tag').textContent = q.cat.charAt(0).toUpperCase() + q.cat.slice(1);
+  document.getElementById('q-number').textContent = `Q ${currentQ+1} / ${total}`;
+  document.getElementById('question-text').textContent = q.q;
+  document.getElementById('score-val').textContent = score;
+  document.getElementById('progress-fill').style.width = (currentQ / total * 100) + '%';
+  document.getElementById('feedback-bar').textContent = '';
+  document.getElementById('feedback-bar').className = 'feedback-bar';
+  updateLives();
+
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span>${opt}`;
+    btn.onclick = () => selectAnswer(i);
+    grid.appendChild(btn);
+  });
+
+  // restart card animation
+  const card = document.getElementById('question-card');
+  card.classList.remove('shake');
+  void card.offsetWidth;
+
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = 20;
+  const circle = document.getElementById('timer-circle');
+  const text = document.getElementById('timer-text');
+  const circ = 126;
+  circle.style.strokeDashoffset = 0;
+  circle.style.stroke = 'var(--teal)';
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    text.textContent = timeLeft;
+    circle.style.strokeDashoffset = circ * (1 - timeLeft / 20);
+    if (timeLeft <= 5) circle.style.stroke = 'var(--red)';
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      if (!answered) timeUp();
+    }
+  }, 1000);
+}
+
+function timeUp() {
+  answered = true;
+  const q = gameQuestions[currentQ];
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b => b.disabled = true);
+  btns[q.ans].classList.add('correct');
+  const fb = document.getElementById('feedback-bar');
+  fb.textContent = `⏱️ Time's up! The answer was: ${q.opts[q.ans]}. ${q.exp}`;
+  fb.className = 'feedback-bar wrong-fb';
+  lives--;
+  wrong++;
+  streak = 0;
+  updateLives();
+  document.getElementById('question-card').classList.add('shake');
+  setTimeout(nextQuestion, 2800);
+}
+
+function selectAnswer(chosen) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+  const q = gameQuestions[currentQ];
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b => b.disabled = true);
+  const fb = document.getElementById('feedback-bar');
+
+  if (chosen === q.ans) {
+    btns[chosen].classList.add('correct');
+    const bonus = timeLeft >= 15 ? 150 : timeLeft >= 10 ? 120 : 100;
+    score += bonus;
+    correct++;
+    streak++;
+    if (streak > bestStreak) bestStreak = streak;
+    document.getElementById('score-val').textContent = score;
+    fb.textContent = `✅ Correct! +${bonus} pts. ${q.exp}`;
+    fb.className = 'feedback-bar correct-fb';
+  } else {
+    btns[chosen].classList.add('wrong');
+    btns[q.ans].classList.add('correct');
+    lives--;
+    wrong++;
+    streak = 0;
+    updateLives();
+    document.getElementById('question-card').classList.add('shake');
+    fb.textContent = `❌ Wrong! The answer was: ${q.opts[q.ans]}. ${q.exp}`;
+    fb.className = 'feedback-bar wrong-fb';
+  }
+
+  setTimeout(nextQuestion, 2600);
+}
+
+function nextQuestion() {
+  if (lives <= 0) { endGame(); return; }
+  currentQ++;
+  loadQuestion();
+}
+
+function endGame() {
+  clearInterval(timerInterval);
+  showScreen('results');
+  const total = gameQuestions.length;
+  const pct = Math.round((correct / total) * 100);
+
+  document.getElementById('result-score').textContent = score;
+  document.getElementById('stat-correct').textContent = correct;
+  document.getElementById('stat-wrong').textContent = wrong;
+  document.getElementById('stat-streak').textContent = bestStreak;
+
+  let emoji, title, sub, grade, gradeBg;
+  if (pct >= 90)      { emoji='🏆'; title='GENIUS!'; sub='You crushed it. Kids? What kids?'; grade='S'; gradeBg='background:linear-gradient(135deg,#ffd600,#ff6b35);color:#000;'; }
+  else if (pct >= 70) { emoji='🌟'; title='Impressive!'; sub='You\'re definitely smarter than the average bear.'; grade='A'; gradeBg='background:linear-gradient(135deg,#06d6a0,#1d7a60);color:#fff;'; }
+  else if (pct >= 50) { emoji='👍'; title='Not Bad!'; sub='Most kids would\'ve stopped trying by question 3.'; grade='B'; gradeBg='background:linear-gradient(135deg,#7b2fbe,#4a1080);color:#fff;'; }
+  else if (pct >= 30) { emoji='😅'; title='Tough Quiz!'; sub='The questions fought back and won. Try again!'; grade='C'; gradeBg='background:linear-gradient(135deg,#ff6b35,#c0392b);color:#fff;'; }
+  else                { emoji='💀'; title='DEFEATED!'; sub='Brain Crusher wins this round. Study up!'; grade='F'; gradeBg='background:linear-gradient(135deg,#444,#222);color:#aaa;'; }
+
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-title').style.color = pct >= 70 ? 'var(--yellow)' : 'var(--white)';
+  document.getElementById('result-subtitle').textContent = sub;
+  const badge = document.getElementById('grade-badge');
+  badge.textContent = `Grade: ${grade}`;
+  badge.style.cssText += gradeBg;
+
+  if (pct >= 70) spawnConfetti();
+}
+
+function spawnConfetti() {
+  const colors = ['#FFD600','#FF6B35','#06D6A0','#7B2FBE','#E63946','#fff'];
+  for (let i = 0; i < 80; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.animationDuration = (1.5 + Math.random() * 2.5) + 's';
+    el.style.animationDelay = (Math.random() * 1.5) + 's';
+    el.style.width = el.style.height = (6 + Math.random() * 10) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 5000);
+  }
+}
+
+function showTitle() {
+  clearInterval(timerInterval);
+  showScreen('title');
+}
+</script>
+</body>
+</html>

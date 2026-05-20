@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Arcade — by Game Master Jr.</title>
+<link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #FFD600;
+    --orange: #FF6B35;
+    --red: #E63946;
+    --blue: #1D3557;
+    --teal: #06D6A0;
+    --purple: #7B2FBE;
+    --white: #FFFCF2;
+    --dark: #0D0D0D;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--dark);
+    font-family: 'Nunito', sans-serif;
+    color: var(--white);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(123,47,190,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(6,214,160,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 60% 10%, rgba(255,107,53,0.2) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 720px;
+    padding: 40px 24px;
+    text-align: center;
+  }
+
+  .joystick { font-size: 72px; display: block; animation: bounce 2s ease-in-out infinite; }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-12px) rotate(3deg); }
+  }
+
+  h1 {
+    font-family: 'Boogaloo', cursive;
+    font-size: clamp(48px, 11vw, 80px);
+    line-height: 1;
+    color: var(--yellow);
+    text-shadow: 4px 4px 0 var(--orange), 8px 8px 0 rgba(0,0,0,0.4);
+    margin: 12px 0 6px;
+  }
+
+  .byline {
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--teal);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 18px;
+    margin-bottom: 40px;
+  }
+
+  .game-card {
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 28px 20px 22px;
+    text-decoration: none;
+    color: var(--white);
+    transition: all 0.2s ease;
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .game-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    border-color: var(--yellow);
+    box-shadow: 0 12px 32px rgba(255,214,0,0.15);
+  }
+
+  .game-icon { font-size: 52px; }
+  .game-name {
+    font-family: 'Boogaloo', cursive;
+    font-size: 24px;
+    color: var(--yellow);
+  }
+  .game-desc {
+    font-size: 13px;
+    font-weight: 700;
+    opacity: 0.6;
+    line-height: 1.4;
+  }
+  .game-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: rgba(6,214,160,0.15);
+    color: var(--teal);
+    padding: 4px 12px;
+    border-radius: 50px;
+  }
+
+  .coming-soon {
+    opacity: 0.35;
+    pointer-events: none;
+    position: relative;
+  }
+  .coming-soon::after {
+    content: 'COMING SOON';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) rotate(-12deg);
+    font-family: 'Boogaloo', cursive;
+    font-size: 20px;
+    color: var(--orange);
+    letter-spacing: 3px;
+    white-space: nowrap;
+  }
+
+  .footer {
+    font-size: 12px;
+    opacity: 0.3;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <span class="joystick">🕹️</span>
+  <h1>GAME<br>ARCADE</h1>
+  <div class="byline">by Game Master Jr.</div>
+
+  <div class="games-grid">
+    <a href="brain-crusher/index.html" class="game-card">
+      <span class="game-icon">💀</span>
+      <span class="game-name">Brain Crusher</span>
+      <span class="game-desc">A quiz so tough it stumps adults. Can you survive?</span>
+      <span class="game-tag">Quiz</span>
+    </a>
+
+    <div class="game-card coming-soon">
+      <span class="game-icon">🚀</span>
+      <span class="game-name">???</span>
+      <span class="game-desc">Something awesome is being built...</span>
+      <span class="game-tag">Mystery</span>
+    </div>
+
+    <div class="game-card coming-soon">
+      <span class="game-icon">🧩</span>
+      <span class="game-name">???</span>
+      <span class="game-desc">Another game is on the way...</span>
+      <span class="game-tag">Puzzle</span>
+    </div>
+  </div>
+
+  <div class="footer">Made with imagination and code</div>
+</div>
+</body>
+</html>
